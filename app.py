@@ -1,7 +1,8 @@
 import os
-
 from complete import Complete
 from data import Data, join_text
+
+data_path = "technology_texts/python-3.8.4-docs-text/python-3.8.4-docs-text/faq"
 
 
 def get_file_list(path):
@@ -13,16 +14,19 @@ def get_file_list(path):
     return file_list
 
 
+def load_data():
+    files_list = get_file_list(data_path)
+    return Complete(Data(files_list)), files_list
+
+
 def start():
     print("Loading the files and preparing the system...")
-
-    files_list = get_file_list("technology_texts/python-3.8.4-docs-text/python-3.8.4-docs-text/faq")
-    complete = Complete(Data(files_list))
+    complete, files_list = load_data()
     print("The system is ready.")
 
     input_ = join_text(input("\nEnter your text: "))
 
-    while 1:
+    while True:
         text = " "
 
         while text[-1] != '#':
@@ -31,11 +35,12 @@ def start():
             if len(match_sentences) != 0:
                 for sentence in match_sentences:
                     print(f"{sentence.completed_sentence} ({files_list[sentence.source_text]} {sentence.offset})")
+                text = input(input_)
             else:
                 print("there is no items")
-            text = input(input_)
-            input_ += join_text(text)
+                text = '#'
 
+            input_ += join_text(text)
         input_ = join_text(input("\nEnter your text: "))
 
 
